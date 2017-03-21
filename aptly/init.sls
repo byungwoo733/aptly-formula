@@ -10,7 +10,11 @@ bzip2:
 aptly_group:
   group.present:
     - name: aptly
+    {% if salt['pillar.get']('aptly:user:gid', 0) %}
+    - gid: {{ salt['pillar.get']('aptly:user:gid') }}
+    {% else %}
     - system: true
+    {% endif %}
 
 aptly_user:
   user.present:
@@ -22,9 +26,6 @@ aptly_user:
       - pkg: aptly
     {% if salt['pillar.get']('aptly:user:uid', 0) %}
     - uid: {{ salt['pillar.get']('aptly:user:uid') }}
-    {% endif %}
-    {% if salt['pillar.get']('aptly:user:gid', 0) %}
-    - gid: {{ salt['pillar.get']('aptly:user:gid') }}
     {% else %}
     - gid_from_name: True
     {% endif %}
